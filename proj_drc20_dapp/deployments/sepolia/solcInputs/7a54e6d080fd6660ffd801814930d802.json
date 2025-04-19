@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/MyErc20Token.sol": {
+      "content": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.24;\n\ncontract MyErc20Token {\n\n    // token基础属性\n    string public _name;  // token name\n    string public _symbol;  // token symbol\n    uint256 public _totalSupply;  // 总供应量\n    uint256 public _totalMinted;  // 总mint数量\n    mapping(address => uint256) public _balance;  // 余额记录\n\n    // 权限相关\n    address public _owner;  // 合约拥有者\n    mapping(address => uint256) public _approveMintBal;  // owner授权给mint权限的数量\n\n    // 事件（必须使用indexed到固定长度类型：address, uint, bool, bytes32等中）\n    event emitTransfer(address indexed from, address indexed to, uint256 amount);\n    event emitApprove(address indexed from, address indexed to, uint256 amount);\n\n    // 构造函数得到ERC20 token\n    constructor(\n        string memory name_, \n        string memory symbol_, \n        uint256 totalSupply_) {\n\n        _name = name_;\n        _symbol = symbol_;\n        _totalSupply = totalSupply_;\n\n        _owner = msg.sender;\n    }\n\n    // 铸造: 仅合约所有者可用(普通用户不能调用此功能) === finished test ===\n    //      合约所有者可以增发代币到指定地址\n    function _ownerMint(\n        address _toAddr,   // 基本类型（uint, address, bool 等）不需要位置修饰符\n        uint256 _amount) public onlyOwner {\n        require((_totalMinted+_amount) < _totalSupply, \"totalSupply is reach!\");\n\n        _balance[_toAddr] += _amount;\n\n        _totalMinted += _amount;\n\n        // 提交emit\n        emit emitTransfer(_owner, _toAddr, _amount);\n    }\n\n    // 铸造: user调用为自己铸造coin  === finished test ===\n    //      仅授权用户可用\n    function _userrMint(uint256 _amount) public {\n        require(_approveMintBal[msg.sender] >= _amount, \"you have not be approved or approve balance is enough!\");\n        require((_totalMinted+_amount) < _totalSupply, \"totalSupply is reach!\");\n\n        _balance[msg.sender] += _amount;\n        _approveMintBal[msg.sender] -= _amount;\n        _totalMinted += _amount;\n\n        // 提交emit\n        emit emitTransfer(msg.sender, msg.sender, _amount);\n    }\n\n    // 余额查询：查询任意地址的代币余额\n    function _balanceOfUser(address _user) public view returns (uint256) {\n        return _balance[_user];\n    }\n\n    // 授权余额查询：查询任意user地址的授权代币余额\n    function _balanceOfApprove(address _user) public view returns (uint256) {\n        return _approveMintBal[_user];\n    }\n\n    // 转账: 允许用户向其他地址转账代币   === finished test ===\n    //      如果余额不足，交易应失败。\n    function _transfer(\n        address _toAddr,\n        uint256 _amount) public balanceEnough(msg.sender, _amount) {\n\n        _balance[msg.sender] -= _amount;\n        _balance[_toAddr] += _amount;\n\n        // 提交emit\n        emit emitTransfer(msg.sender, _toAddr, _amount);\n    }\n\n    // 销毁: 允许用户销毁自己持有的代币，减少总供应量。  === finished test ===\n    function _burn(uint256 _amount) public balanceEnough(msg.sender, _amount) { \n        // 减少\n        _balance[msg.sender] -= _amount;\n        _totalSupply -= _amount;\n        \n        emit emitTransfer(msg.sender, address(0), _amount);\n    }\n    \n    // 授权: owner授权给某个地址允许他去自行mint  === finished test ===\n    function _approveMint(address _toAddr, uint256 _amount) public onlyOwner {\n        _approveMintBal[_toAddr] += _amount;\n\n        emit emitApprove(msg.sender, _toAddr, _amount);\n    }\n\n    // 只有权限拥有者才可以操作\n    modifier onlyOwner() {\n        require(msg.sender == _owner, \"only owner can do it!\");\n        _;\n    }\n\n    // 余额要达到某个数量\n    modifier balanceEnough(address _addr, uint256 _amount) {\n        require(_balance[_addr] >= _amount, \"balance is not enough!\");\n        _;\n    }\n\n}\n\n"
+    }
+  },
+  "settings": {
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
