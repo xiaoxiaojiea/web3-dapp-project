@@ -1,0 +1,59 @@
+.main-app {
+  display: grid;              /* 使用 Grid 布局 */
+  place-items: center;        /* 水平和垂直居中 */
+  height: 60vh;              /* 使容器高度为 100% 的视口高度 */
+  width: 100%;                /* 宽度 100% */
+}
+
+/* 普通按钮样式 */
+.btn {
+  height: 40px;             /* 设置固定高度 */
+  width: auto;              /* 宽度自适应内容 */
+  padding: 0 20px;          /* 内边距，用来调整按钮的左右间距 */
+  background-color: #4CAF50; /* 背景颜色 */
+  color: white;             /* 文字颜色 */
+  border: none;             /* 去除边框 */
+  border-radius: 5px;       /* 圆角 */
+  font-size: 16px;          /* 字体大小 */
+  cursor: pointer;         /* 鼠标指针 */
+  display: inline-block;    /* 按钮宽度自适应 */
+  text-align: center;       /* 文字居中 */
+  line-height: 20px;        /* 让文本在按钮中垂直居中 */
+}
+
+.btn:hover {
+  background-color: #ff5100; /* 鼠标悬停时改变背景色 */
+}
+
+.btn:active {
+  background-color: #388e3c; /* 点击按钮时的背景色 */
+}
+
+.btn:focus {
+  outline: none;             /* 去除按钮聚焦时的外边框 */
+}
+
+.border-app {
+  display: grid;              /* 使用 Grid 布局 */
+  place-items: left;        /* 水平和垂直居中 */
+  height: 60vh;              /* 使容器高度为 100% 的视口高度 */
+  width: 100%;                /* 宽度 100% */
+}
+
+.single-border {
+  display: flex;              /* 使用 Flexbox 布局 */
+  justify-content: flex-start; /* 默认值，元素从左到右排列 */
+  gap: 15px;                  /* 设置子元素之间的间隙 */
+}
+
+.input-text {
+  width: 300px;             /* 设置固定宽度 */
+  height: 40px;             /* 设置固定高度 */
+  padding: 0 10px;          /* 内边距，调整文本输入框内文本的位置 */
+  font-size: 16px;          /* 字体大小 */
+  border: 1px solid #ccc;   /* 边框 */
+  border-radius: 5px;       /* 圆角 */
+  outline: none;            /* 去除输入框聚焦时的边框 */
+  box-sizing: border-box;   /* 确保内边距和边框不会影响元素的总宽度和高度 */
+}
+
